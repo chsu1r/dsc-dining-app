@@ -1,0 +1,35 @@
+@media (max-width: 768px) {
+    .text-center-sm {
+        text-align: center;
+    }
+}
+
+.dorms-col {
+    padding-left: 50px;
+}
+
+.dorm-panel {
+    height: 5em;
+    padding: 1em;
+    padding-top: 2em;
+    box-shadow: 0 10px 16px 0 rgba(0,0,0,0.08), 0 6px 20px 0 rgba(0,0,0,0.08);
+    color: black;
+    margin-top: 5px;
+}
+
+.dorm-panel:hover {
+    background-color: rgba(129, 183, 189, 0.3);
+}
+
+.dorm-panel-select {
+    background-color: rgba(129, 183, 189, 0.7);
+}
+
+.dorm-panel-select:hover {
+    background-color: rgba(129, 183, 189, 0.7);
+}
+
+.menu-col {
+    justify-content: center;
+    text-align: center;
+}

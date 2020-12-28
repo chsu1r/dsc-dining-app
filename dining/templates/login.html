@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="row form-container">
+    <div class="col-md-12">
+        <h2 class="comfortaa-font" style="font-weight: bold;">Login:</h2>
+        <form name="login_form" method="POST" id="loginForm" class="form-inline justify-content-center" role="form" style="display: inline-block;">
+            {{ login_form.hidden_tag() }}
+            <div class="form form-group">
+                {% for field in login_form if field.widget.input_type != 'hidden' %}
+                    {% if field.type != "SubmitField" %}
+                        {{ field(class="form-input-wide form-control") }}
+                        {% for error in field.errors %}
+                            <div class="text-block error"> <p>{{ error }}</p></div>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <p>{{ login_form.submit(class="form-submit btn btn-default") }}</p>
+        </form>
+        <p><a href="{{ url_for('resetpassword') }}">Forgot password? Click here to reset.</a></p>
+
+        <h2 class="comfortaa-font" style="font-weight: bold; margin-top: 5vh;">Still need an account?</h2>
+        <a class="form-submit btn btn-default" href="{{ register_url }}"><span>SIGN UP</span> </a>
+    </div>
+</div>
+{% endblock %}

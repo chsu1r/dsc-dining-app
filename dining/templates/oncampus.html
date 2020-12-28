@@ -1,0 +1,82 @@
+{% extends "index.html" %}
+{% block content %}
+
+<div class="row-full" style="background-color: rgba(129, 183, 189, 0.08);">
+    <div class="body-container container">
+        <section id="main-menu-section" style="margin-bottom: 0; padding-bottom: 30px;">
+            <div class="row main-menu-row font-sz-xs" style="margin: 0 40px;">
+                <div class="dorms-col col-xs-12 col-sm-12 col-md-4 col-lg-4" style="margin-top: 20px;">
+                    <a href="/oncampus/maseeh">
+                        <div class="{{ 'dorm-panel row' if dorm_name!='Maseeh' else 'dorm-panel-select dorm-panel row' }}">Maseeh</div>
+                    </a>
+                    <a href="/oncampus/mccormick">
+                        <div class="{{ 'dorm-panel row' if dorm_name!='McCormick' else 'dorm-panel-select dorm-panel row' }}">McCormick</div>
+                    </a>
+                    <a href="/oncampus/baker">
+                        <div class="{{ 'dorm-panel row' if dorm_name!='Baker' else 'dorm-panel-select dorm-panel row' }}">Baker</div>
+                    </a>
+                    <a href="/oncampus/simmons">
+                        <div class="{{ 'dorm-panel row' if dorm_name!='Simmons' else 'dorm-panel-select dorm-panel row' }}">Simmons</div>
+                    </a>
+                    <a href="/oncampus/next">
+                        <div class="{{ 'dorm-panel row' if dorm_name!='Next' else 'dorm-panel-select dorm-panel row' }}">Next</div>
+                    </a>
+                </div>
+                <div class="menu-col col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="dorm-menu-panel col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <h2 class="page-section-heading org-panel-heading">Dorm Menu for {{ dorm_name }}</h2>
+                            <div id="accordion">
+                                {% if meals %}
+                                {% for meal in meals %}
+                                {% set datatargetname = 'messagesResponsive' + meal['name'] %}
+                                <div class="menu-panel card col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <h4 class="card-heading meal-panel-heading"> 
+                                        <button class="meal-menu-heading btn btn-link" type="button"
+                                            data-toggle="collapse" data-target="{{'#' + datatargetname }}"
+                                            aria-expanded="false" aria-controls="{{ datatargetname }}"
+                                            style="float: left;">{{ meal['name'] }}</button>
+                                    </h4>
+                                    <div class="meal-menu collapse dont-collapse-sm" id="{{ datatargetname }}" data-parent="#accordion">
+                                        <div class="card-body">
+                                            {% if meal['items'] %}
+                                            {% for item in meal['items'] %}
+                                            <div class="meal-item">
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="display: flex; float:left; text-align:left;">
+                                                        <b>{{ item['name'] }}</b>
+                                                    </div>
+                                                    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+                                                        <span style="float:left;color:gray">
+                                                            {% for flag in item['dietary_flags'] %}
+                                                            <button type="button" class="diet-btn btn" style="{{ 'background-color: ' + colors[flag] + '; border-color: ' + colors[flag] + ';' }}" data-toggle="tooltip" data-placement="top" title="{{ flag }}">
+                                                                {{ abbrevs[flag] }}
+                                                            </button>
+                                                            {% endfor %}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+                                                        <span>Stars here</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                <div>
+                                    <span>No meals to display yet!</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

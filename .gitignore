@@ -1,0 +1,9 @@
+**.pyc
+**.zip
+*.DS_Store
+*.vscode
+*__pycache__/
+
+.env.constants
+dining-venv/
+venv/

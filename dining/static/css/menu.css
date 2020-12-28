@@ -1,0 +1,42 @@
+.menu-panel {
+    padding: 15px;
+    margin-top: 5px;
+  }
+  
+  @media (max-width: 768px) {
+    .menu-panel {
+      margin-top: 10px;
+    }
+  }
+  
+  .meal-panel-heading {
+    font-weight: bold;
+    font-size: 3rem;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+  }
+  
+  @media (max-width: 768px) {
+    .meal-panel-heading {
+      text-align: center;
+    }
+  }
+
+  .meal-menu-heading {
+      color: black;
+      font-size: 0.4em;
+  }
+
+  .meal-menu {
+      font-size: 0.8rem;
+  }
+
+  .meal-item {
+      margin-top: 5px;
+      padding: 2px;
+  }
+
+  .diet-btn {
+    color:white;
+    font-size: 1em;
+    padding: 0.3em 0.4em;
+  }

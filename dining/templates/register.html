@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="margin-top-section row form-container">
+    <div class="col-md-12">
+        <h4 class="comfortaa-font" style="font-weight: bold;">Sign up:</h4>
+        <div class="text-block">Already have an account? <a class="faded-btn btn btn-default" href="{{ url_for('login') }}"><span>SIGN IN</span> </a></div> 
+        <form name="register_form" method="POST" action="" id="registerForm" class="form-inline justify-content-center" role="form">
+            {{ register_form.hidden_tag() }}
+            <div id="register-form" class="form form-half-width form-group">
+                    {% for field in register_form if field.widget.input_type != 'hidden' %}
+                        {% if field.type == "SubmitField" %}
+                            <div class="text-block">{{ field(class="log-btn btn btn-default") }}</div>
+                        {% elif field.type == "BooleanField" %}
+                            <div><div class="text-block">{{ field.label(style="display: block;") }}</div>{{ field(class="form-control") }}</div>
+                        {% else %}
+                            {{ field(class="form-input-wide form-control") }}
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-block error"> <p>{{ error }}</p></div>
+                        {% endfor %}
+                    {% endfor %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
