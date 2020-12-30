@@ -2,7 +2,7 @@
 
 ## Getting Started
  1) Clone this repository.
- 2) Make sure you have everything you need (Python 3, command line).
+ 2) Make sure you have everything you need (Python 3, command line, Git).
  3) Start your virtual environment.
 
  IMPORTANT: If you end up pushing this to Github for any reason, make sure you DO NOT PUSH the file that contains your API keys (.env.constants in my case).
@@ -10,17 +10,27 @@
  ## Running the app
  * Ensure that everything is cloned and that you have installed everything within your virtual environment.
 
-startapp.sh should just initialize everything you need. Run it using the following.
+startapp.sh or startapp_windows.bat should just initialize everything you need. Run it using the following.
 ```
- source ./startapp.sh  # WSL
+ source ./startapp.sh  # Linux/MacOS
+ or
+ startapp_windows.bat  # For Windows
 ```
  If that doesn't work then try the following:
 
 ```
+## Linux/MacOS
 source dining-venv/bin/activate  # activate virtual env
 source .env.constants  # initialize environment variables (API keys, etc)
 source .flaskenv  # initialize Flask settings (where to find the Flask app)
 flask run  # Run the Flask app
+
+## Windows
+.\dining-venv\Scripts\activate
+.env.constants.bat
+set FLASK_ENV=development
+set FLASK_APP=main.py
+flask run
 ```
 This should bring up a locally running version of your app. The command line output should indicate where you should go to find it. For example, if my output is as below, then I would go to 'http://127.0.0.1:5000/' in my web browser.
 ```
