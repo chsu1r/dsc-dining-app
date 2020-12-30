@@ -10,7 +10,7 @@ URLs include:
 from flask import render_template, url_for, request, redirect, session, flash, Markup, abort
 from requests import HTTPError
 import requests
-from dining import app
+from dining import app, firebase_auth, firebase_db
 
 SAMPLE_MENU_URL = "http://clhsu.scripts.mit.edu/sample-menu.json"
 DIETARY_FLAG_ABBREVS = {"halal" : "HL", "made without gluten": "GF", "vegetarian": "VT", "vegan": "VG", "humane" : "HU", "seafood watch" : "SF", "in balance": "IB"}
