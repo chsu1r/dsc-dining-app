@@ -8,7 +8,7 @@ URLs include:
 """
 from flask import session, redirect, url_for, request, flash, render_template
 from requests import HTTPError
-from dining import app
+from dining import app, firebase_auth, firebase_db
 from dining.forms import (LoginForm, RegisterForm, ResetPasswordForm)
 from dining.utils import (
     login_required, redirect_dest, get_redirect_url, refresh_user_token, ERROR_MESSAGE_DICT)
@@ -16,6 +16,9 @@ from dining.utils import (
 @app.route('/login/', methods=["GET", "POST"])
 def login():
     """Display the login page."""
+    # Check if the user is logged in by (1) checking to see if there are login tokens available
+    # and (2) refreshing the user's token to see if the token is valid. 
+    # See dining/utils.py for more on what refresh_user_token() does.
     if 'token' in session and 'user_id' in session and refresh_user_token():
         flash("Already logged in!", "warning")
         return redirect(url_for('index'))
@@ -31,10 +34,12 @@ def login():
                 email = form.email.data
                 password = form.password.data
 
-                # TODO() FILL THIS IN: Call the Firebase auth service to get the user credentials.
-                
+                # TODO(SESSION1) FILL THIS LINE IN: Call the Firebase auth service to get the user credentials.
+                # user = _______
+
+                # TODO(SESSION2) Replace this line with a call to the Firebase database service to get the user from the users table.
                 user_resp = {}
-                # TODO() FILL THIS IN: Call the Firebase database service to get the user from the users table.
+
 
                 user_favorites = user_resp.get("favorites", {})
 
@@ -59,9 +64,10 @@ def resetpassword():
     if request.method == "POST":
         if form.validate():
             try:
-                # TODO(): FILL THIS IN - reset the user's password given their email address.
+                # TODO(SESSION1): Write a line here to reset the user's password given their email address.
                 # Then clear the session's information, and it will redirect to the login page
                 # for the user to log in again.
+                
 
                 flash(("Email sent successfully - check your inbox to "
                        "reset your password."),
@@ -85,16 +91,19 @@ def register():
                 password = form.password.data
 
                 # (1) Create the user in the authentication database.
-                # TODO() FILL THIS IN: Create a user in the Firebase auth service.
-                new_user = None
+                # TODO(SESSION1) Replace None here with a call to Firebase: Create a user in the Firebase auth service.
+                new_user = None  # Modify this line
 
                 # (2) Create the user in the users database.
                 user_data = {
-                    
+                    "name": name,
+                    "favorites": []
                 }
 
                 # (3) Push that new user to the Firebase db, the users table.
-                # TODO(): FILL THIS IN: push the new user object to firebase.
+                # TODO(SESSION2): Write a line below to push the new user object to Firebase.
+
+
                 
                 # (4) Set initial session values
                 session["token"] = new_user.get("idToken", "")
