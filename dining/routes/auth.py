@@ -111,7 +111,7 @@ def register():
                 session["user_id"] = new_user.get("localId", "")
                 session["refresh_token"] = new_user.get("refreshToken", "")
 
-                return redirect(get_redirect_url('index', request.args, False))
+                return redirect_dest(url_for('index'), request.args)
 
             except HTTPError as err:
                 if err.response and \
