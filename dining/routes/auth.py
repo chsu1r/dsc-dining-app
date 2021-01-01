@@ -35,7 +35,7 @@ def login():
                 password = form.password.data
 
                 # TODO(SESSION1) FILL THIS LINE IN: Call the Firebase auth service to get the user credentials.
-                # user = _______
+                user = firebase_auth.sign_in_with_email_and_password(email, password)
 
                 # TODO(SESSION2) Replace this line with a call to the Firebase database service to get the user from the users table.
                 user_resp = {}
@@ -67,8 +67,8 @@ def resetpassword():
                 # TODO(SESSION1): Write a line here to reset the user's password given their email address.
                 # Then clear the session's information, and it will redirect to the login page
                 # for the user to log in again.
-                
-
+                email = form.email.data
+                firebase_auth.send_password_reset_email(email)
                 flash(("Email sent successfully - check your inbox to "
                        "reset your password."),
                       "success")
@@ -92,7 +92,7 @@ def register():
 
                 # (1) Create the user in the authentication database.
                 # TODO(SESSION1) Replace None here with a call to Firebase: Create a user in the Firebase auth service.
-                new_user = None  # Modify this line
+                new_user = firebase_auth.create_user_with_email_and_password(email, password)  # Modify this line
 
                 # (2) Create the user in the users database.
                 user_data = {
