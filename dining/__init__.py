@@ -11,6 +11,14 @@ import pyrebase
 app = Flask(__name__, static_url_path='/static')
 app.config.from_object(Config)
 
+class FirebaseAccess:
+    """Setup for firebase refs. This is a wrapper class that makes it easier to use the Firebase database system via Pyrebase. """
+
+    def __init__(self, firebase_db):
+        self.root = firebase_db.ref()
+        self.users = firebase_db.child("users").ref()
+
+
 # TODO(SESSION1): Uncomment the Firebase stuff here.
 
 # firebase_config = {
