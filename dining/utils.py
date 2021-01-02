@@ -10,6 +10,7 @@ from urllib.parse import urlparse, urljoin
 import requests as rq
 from requests import HTTPError
 from flask import session, flash, redirect, url_for, jsonify, abort, request
+from dining import firebase_auth, firebase_db
 
 ERROR_MESSAGE_DICT = {
     "WEAK_PASSWORD : Password should be at least 6 characters":
