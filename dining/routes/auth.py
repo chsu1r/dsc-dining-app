@@ -37,12 +37,6 @@ def login():
                 # TODO(SESSION1) FILL THIS LINE IN: Call the Firebase auth service to get the user credentials.
                 user = firebase_auth.sign_in_with_email_and_password(email, password)
 
-                # TODO(SESSION2) Replace this line with a call to the Firebase database service to get the user from the users table.
-                user_resp = {}
-
-
-                user_favorites = user_resp.get("favorites", {})
-
                 # setting session variables
                 session["token"] = user["idToken"]
                 session["refresh_token"] = user["refreshToken"]
@@ -97,12 +91,20 @@ def register():
                 # (2) Create the user in the users database.
                 user_data = {
                     "name": name,
-                    "favorites": []
                 }
 
                 # (3) Push that new user to the Firebase db, the users table.
                 # TODO(SESSION2): Write a line below to push the new user object to Firebase.
+                ## CODE HERE
+                try:
+                    if "localId" in new_user and 'idToken' in new_user:
+                        user = firebase_db.users.child(
+                            new_user["localId"]).set(user_data, token=new_user["idToken"])
 
+                except HTTPError as err:
+                    print("There was an error in pushing the new user information to Firebase.")
+                    raise err
+                ## END CODE HERE
 
                 
                 # (4) Set initial session values

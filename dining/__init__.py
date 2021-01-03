@@ -15,8 +15,8 @@ class FirebaseAccess:
     """Setup for firebase refs. This is a wrapper class that makes it easier to use the Firebase database system via Pyrebase. """
 
     def __init__(self, firebase_db):
-        # self.root = firebase_db.ref()
-        # self.users = firebase_db.child("users").ref()
+        self.root = firebase_db.ref()
+        self.users = firebase_db.child("users").ref()
         return
 
 
@@ -25,7 +25,7 @@ class FirebaseAccess:
 firebase_config = {
     "apiKey": Config.FIREBASE_API_KEY,  # IMPORTANT - Do not paste your API key in here. We load in the API key from the Config object, which read it in from your environment variables.
     "authDomain": "dsc-dining-app.firebaseapp.com",  # TODO(SESSION1): REPLACE ALL values with your own Firebase config values.
-    "databaseURL": "https://dsc-dining-app.firebaseio.com",  # This should just be "https://<insert-databaseName>.firebaseio.com"
+    "databaseURL": "https://dsc-dining-app-default-rtdb.firebaseio.com/",
     "projectId": "dsc-dining-app", 
     "storageBucket": "dsc-dining-app.appspot.com",
     "messagingSenderId": "775899941425",
