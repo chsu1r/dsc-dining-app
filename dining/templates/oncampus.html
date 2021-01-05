@@ -56,7 +56,10 @@
                                                         </span>
                                                     </div>
                                                     <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
-                                                        <span><input id="{{ 'input-' + item['id'] + '-ltr-star-xs' }}" name="{{ 'input-' + item['id'] + '-ltr-star-xs' }}" class="kv-ltr-theme-svg-star rating-loading" value="{{ item['rating'] }}" dir="ltr" data-size="xs"></span>
+                                                        <span style="display:inline-flex;">MIT: <input id="{{ 'input-' + item['id'] + '-ltr-star-xs-global' }}" name="{{ 'input-' + item['id'] + '-ltr-star-xs-global' }}" class="kv-ltr-theme-svg-star-global rating-loading" value="{{ item['global_rating'] }}" dir="ltr" data-size="xs"></span>
+                                                        {% if 'token' in session %}
+                                                        <span style="display:inline-flex;">You: <input id="{{ 'input-' + item['id'] + '-ltr-star-xs-individual' }}" name="{{ 'input-' + item['id'] + '-ltr-star-xs-individual' }}" class="kv-ltr-theme-svg-star rating-loading" value="{{ item['rating'] }}" dir="ltr" data-size="xs"></span>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             </div>
@@ -93,6 +96,14 @@
             showCaption: false,
             step:1,
             displayOnly: !data["is_logged_in"],
+            showClear: false,
+        });
+        $('.kv-ltr-theme-svg-star-global').rating({
+            hoverOnClear: false,
+            theme: 'krajee-svg',
+            showCaption: false,
+            step: 0.5,
+            displayOnly: true,
             showClear: false,
         });
     });

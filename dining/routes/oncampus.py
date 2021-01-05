@@ -25,10 +25,14 @@ def oncampus(dorm_name):
     house_menus = resp["venues"]["house"]
     house_menu = {}
     user_ratings = {}
+    global_ratings = {}
     ## TODO(): SESSION2: Grab the user individual ratings and the global ratings across all users from the database.
     if 'token' in session and 'user_id' in session and refresh_user_token():
         users_db = firebase_db.child('users').child(session["user_id"])
         user_ratings = users_db.child('ratings').get(session['token']).val()
+
+    global_ratings = firebase_db.child('food').get().val()
+    global_ratings = {} if not global_ratings else global_ratings  # if the food table doesn't exist, then just use an empty dictionary.
 
     ## END CODE
 
@@ -41,8 +45,13 @@ def oncampus(dorm_name):
         for i, item in enumerate(meal['items']):
             item_name = item['name']
             hashed = hashlib.sha256((dorm_name + item_name).encode("utf-8")).hexdigest()
+            
+            # populate some additional fields in the house_menu object for display on webpage.
             house_menu[meal_idx]['items'][i]['id'] = hashed
             house_menu[meal_idx]['items'][i]['rating'] = user_ratings.get(hashed, 0)
+            house_menu[meal_idx]['items'][i]['global_rating'] = global_ratings.get(hashed, {}).get("avg_rating", 0)
+
+            # minor hacks to fix some things in the menu json
             item['description'] = item['description'].replace('\n', ' ')
             item['name'] = item['name'].replace('\n', ' ')
 
