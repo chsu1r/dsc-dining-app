@@ -31,7 +31,7 @@ def refresh_user_token():
     try:
         # TODO(SESSION1): Write a line to refresh the user's token using the refresh token stored in the session.
         # Then write another line to store the new token and refresh token in the session.
-        user = firebase_auth.auth.refresh(session["refresh_token"])
+        user = firebase_auth.refresh(session["refresh_token"])
         session["token"], session["refresh_token"] = user["idToken"], user["refreshToken"]
         return True  # keep this
 
@@ -47,6 +47,31 @@ def refresh_user_token():
             session.clear()
             return False
         abort(404)
+
+def is_safe_url(target):
+    """Determine if the redirect URL is safe or nah"""
+    # Also yes I copied this from flask_admin
+    valid_schemes = ['http', 'https']
+    _substitute_whitespace = compile(r'[\s\x00-\x08\x0B\x0C\x0E-\x19]+').sub
+    _fix_multiple_slashes = compile(r'(^([^/]+:)?//)/*').sub
+
+    target = target.replace('\\', '/')
+
+    # handle cases like "j a v a s c r i p t:"
+    target = _substitute_whitespace('', target)
+
+    # Chrome and FireFox "fix" more than two slashes into two after protocol
+    target = _fix_multiple_slashes(lambda m: m.group(1), target, 1)
+
+    # prevent urls starting with "javascript:"
+    target_info = urlparse(target)
+    target_scheme = target_info.scheme
+    if target_scheme and target_scheme not in valid_schemes:
+        return False
+
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return ref_url.netloc == test_url.netloc
 
 def get_redirect_url(fallback, args={}, go_to_dest=True):
     """ Generate the redirect URL if able to, otherwise generate fallback/ """

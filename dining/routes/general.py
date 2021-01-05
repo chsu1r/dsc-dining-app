@@ -21,7 +21,8 @@ def index():
     ## CODE HERE
     if 'token' in session and 'user_id' in session and refresh_user_token():  # if logged in
         try:
-            user = firebase_db.users.child(session['user_id']).get(session['token']).val()
+            users_db = firebase_db.child('users')
+            user = users_db.child(session['user_id']).get(session['token']).val()
 
         except HTTPError as err:
             print("There was an error in getting the user information from Firebase.")

@@ -98,8 +98,8 @@ def register():
                 ## CODE HERE
                 try:
                     if "localId" in new_user and 'idToken' in new_user:
-                        user = firebase_db.users.child(
-                            new_user["localId"]).set(user_data, token=new_user["idToken"])
+                        users_db = firebase_db.child('users')
+                        users_db.child(new_user["localId"]).set(user_data, token=new_user.get("idToken", ""))
 
                 except HTTPError as err:
                     print("There was an error in pushing the new user information to Firebase.")

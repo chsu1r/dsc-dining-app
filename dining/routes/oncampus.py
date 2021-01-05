@@ -11,7 +11,7 @@ from flask import render_template, url_for, request, redirect, session, flash, M
 from requests import HTTPError
 import requests
 from dining import app, firebase_auth, firebase_db
-from dining.utils import login_required
+from dining.utils import login_required, refresh_user_token
 import hashlib
 
 SAMPLE_MENU_URL = "http://clhsu.scripts.mit.edu/sample-menu.json"
@@ -24,6 +24,14 @@ def oncampus(dorm_name):
     resp = r.json()
     house_menus = resp["venues"]["house"]
     house_menu = {}
+    user_ratings = {}
+    ## TODO(): SESSION2: Grab the user individual ratings and the global ratings across all users from the database.
+    if 'token' in session and 'user_id' in session and refresh_user_token():
+        users_db = firebase_db.child('users').child(session["user_id"])
+        user_ratings = users_db.child('ratings').get(session['token']).val()
+
+    ## END CODE
+
     for menu in house_menus:
         if menu['name'].lower() == dorm_name:
             dorm_name = menu['name']
@@ -34,17 +42,22 @@ def oncampus(dorm_name):
             item_name = item['name']
             hashed = hashlib.sha256((dorm_name + item_name).encode("utf-8")).hexdigest()
             house_menu[meal_idx]['items'][i]['id'] = hashed
+            house_menu[meal_idx]['items'][i]['rating'] = user_ratings.get(hashed, 0)
             item['description'] = item['description'].replace('\n', ' ')
             item['name'] = item['name'].replace('\n', ' ')
 
     # house_menu is a list where each item is a meal of the day
     # Each item is {'name': ..., 'items': []}
-    return render_template('oncampus.html', meals=house_menu, dorm_name=dorm_name, abbrevs=DIETARY_FLAG_ABBREVS, colors=DIETARY_FLAG_COLORS, js_json={"meals": house_menu }, pagetitle="Dining App")
+    return render_template('oncampus.html', meals=house_menu, dorm_name=dorm_name, abbrevs=DIETARY_FLAG_ABBREVS, colors=DIETARY_FLAG_COLORS, js_json={"meals": house_menu,"is_logged_in":'token' in session, 'dorm':dorm_name}, pagetitle="Dining App")
 
 @app.route('/oncampus/submit-rating', methods=["POST"])
 @login_required
 def submit_rating():
     rating = int(request.json['value'])
     item_id = request.json['id'].split('-')[1]
-    print(rating, item_id)
+    ## TODO() SESSION2: Fill in code to push a rating the "food" table.
+    user_ratings = firebase_db.child('users').child(session["user_id"]).child('ratings')
+    user_ratings.child(item_id).set(rating, token=session['token'])
+
+
     return "success"

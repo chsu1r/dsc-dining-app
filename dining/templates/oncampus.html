@@ -56,7 +56,7 @@
                                                         </span>
                                                     </div>
                                                     <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
-                                                        <span><input id="{{ 'input-' + item['id'] + '-ltr-star-xs' }}" name="{{ 'input-' + item['id'] + '-ltr-star-xs' }}" class="kv-ltr-theme-svg-star rating-loading" value="0" dir="ltr" data-size="xs"></span>
+                                                        <span><input id="{{ 'input-' + item['id'] + '-ltr-star-xs' }}" name="{{ 'input-' + item['id'] + '-ltr-star-xs' }}" class="kv-ltr-theme-svg-star rating-loading" value="{{ item['rating'] }}" dir="ltr" data-size="xs"></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -92,17 +92,16 @@
             theme: 'krajee-svg',
             showCaption: false,
             step:1,
+            displayOnly: !data["is_logged_in"],
+            showClear: false,
         });
     });
 
     $('.kv-ltr-theme-svg-star').on('rating:change', function(event, value, caption) {
-        console.log(value);
-        console.log(caption);
-        console.log(this.id);
         $.ajax({
             url: "submit-rating",
             type: "POST",
-            data: JSON.stringify({"value": value, "id": this.id}),
+            data: JSON.stringify({"value": value, "id": this.id, "dorm": data["dorm"]}),
             contentType: "application/json; charset=UTF-8",
             success: function(response) {
                 console.log(response);
