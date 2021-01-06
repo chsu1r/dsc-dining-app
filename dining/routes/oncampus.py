@@ -30,6 +30,7 @@ def oncampus(dorm_name):
     if 'token' in session and 'user_id' in session and refresh_user_token():
         users_db = firebase_db.child('users').child(session["user_id"])
         user_ratings = users_db.child('ratings').get(session['token']).val()
+        user_ratings = {} if not user_ratings else user_ratings
 
     global_ratings = firebase_db.child('food').get().val()
     global_ratings = {} if not global_ratings else global_ratings  # if the food table doesn't exist, then just use an empty dictionary.
@@ -45,7 +46,7 @@ def oncampus(dorm_name):
         for i, item in enumerate(meal['items']):
             item_name = item['name']
             hashed = hashlib.sha256((dorm_name + item_name).encode("utf-8")).hexdigest()
-            
+
             # populate some additional fields in the house_menu object for display on webpage.
             house_menu[meal_idx]['items'][i]['id'] = hashed
             house_menu[meal_idx]['items'][i]['rating'] = user_ratings.get(hashed, 0)
