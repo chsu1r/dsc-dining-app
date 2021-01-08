@@ -4,6 +4,17 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
+// This is a listener for any changes made to a user ratings list. This function will execute any time a change is recorded.
+// Here's what's happening:
+// (1) We grab the state of the ratings list before and after the change.
+// (2) We search for what changed by iterating across the final state of the ratings, comparing it to before.
+//     - Note that this could either be an existing rating that was changed or a new rating.
+// (3) If we find something was changed, then we grab a reference to the 'food' table, which has all our global ratings.
+//     - If the 'food' table doesn't have the meal item that was changed, then we know this must be the first user rating.
+//     - otherwise, we grab the existing rating and then recalculate the average. We do different math based on whether
+//       this is a new or existing user rating to update the average.
+// (4) In all cases, we "set" the new value by calling a ".set({new values})" call on the reference to the entry in the 'food' table.
+
 exports.updateAvgRating = functions.database.ref('/users/{uid}/ratings').onWrite(async (change) => {
     const before_val = change.before.val();  // grab the state of the db before the change
     const after_val = change.after.val();  // grab the state of the db after the change
@@ -46,7 +57,7 @@ exports.updateAvgRating = functions.database.ref('/users/{uid}/ratings').onWrite
                 });
             }
         } else {
-            // new entry in global ratings (first rating).
+            // new entry in global ratings (first user rating).
             admin.database().ref('/food/' + changed_hash).set({
                 avg_rating : after_val[changed_hash],
                 num_votes : 1

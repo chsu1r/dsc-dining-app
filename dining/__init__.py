@@ -16,7 +16,7 @@ app.config.from_object(Config)
 firebase_config = {
     "apiKey": Config.FIREBASE_API_KEY,  # IMPORTANT - Do not paste your API key in here. We load in the API key from the Config object, which read it in from your environment variables.
     "authDomain": "dsc-dining-app.firebaseapp.com",  # TODO(SESSION1): REPLACE ALL values with your own Firebase config values.
-    "databaseURL": "https://dsc-dining-app-default-rtdb.firebaseio.com/",
+    "databaseURL": "https://dsc-dining-app-default-rtdb.firebaseio.com/",  # TODO(SESSION2): Replace w/ actual database URL.
     "projectId": "dsc-dining-app", 
     "storageBucket": "dsc-dining-app.appspot.com",
     "messagingSenderId": "775899941425",

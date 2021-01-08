@@ -19,6 +19,7 @@ def index():
     user = None
     # TODO(SESSION2): Check to see if the user is logged in, and if so, then fetch user information from Firebase database.
     ## CODE HERE
+
     if 'token' in session and 'user_id' in session and refresh_user_token():  # if logged in
         try:
             users_db = firebase_db.child('users')
@@ -27,5 +28,6 @@ def index():
         except HTTPError as err:
             print("There was an error in getting the user information from Firebase.")
             raise err
-    ## END CODE HERE
+
+    ## END CODE
     return render_template('index.html', user=user)

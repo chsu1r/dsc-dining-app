@@ -10,7 +10,7 @@
  ## Running the app
  * Ensure that everything is cloned and that you have installed everything within your virtual environment.
 
-startapp.sh or startapp_windows.bat should just initialize everything you need. Run it using the following.
+[startapp.sh](startapp.sh) or [startapp_windows.bat](startapp_windows.bat) should just initialize everything you need. Run it using the following.
 ```
  source ./startapp.sh  # Linux/MacOS
  or
@@ -51,14 +51,15 @@ Flask settings configured... Running Flask app now.
  ## What's even here anyways
  The directory structure is as follows:
  * base directory contains configuration files and app startup scripts.
-    * main.py is where the app starts (it loads in the dining directory.)
-    * requirements.txt is the list of packages that is used in the virtual environment for the app to work properly.
+    * [main.py](main.py) is where the app starts (it loads in the dining directory.)
+    * [requirements.txt](requirements.txt) is the list of packages that is used in the virtual environment for the app to work properly.
 
  * the dining directory contains most of the actual source code for the app
-    * Inside the dining directory, we have a few subdirectories.
-    * routes contains the python code for each of the pages. This is basically the app-side backend logic that fetches and pushes to databases and then determines what should display within the HTML.
-    * templates contains the HTML file that organizes how information should be displayed on each page.
-    * static is all the css styling and any images that need to be included.
+    * Inside the **[dining](dining/)** directory, we have a few subdirectories.
+    * **[routes](dining/routes)** contains the python code for each of the pages. This is basically the app-side backend logic that fetches and pushes to databases and then determines what should display within the HTML.
+    * **[templates](dining/templates)** contains the HTML file that organizes how information should be displayed on each page.
+    * **[static](dining/static)** is all the css styling and any images that need to be included.
     * There are a couple of utility files just in the base dining directory that are used throughout the project. (This is in an effort to keep the routes files as clean as possible.)
-    * __ init__.py is important because it declares the Flask app object, which is essentially the app.
+    * [__ init__.py](dining/__init__.py) is important because it declares the Flask app object, which is essentially the app.
+ * cloud_functions contains source code relevant to the session that will talk about cloud functions.
  * Many of the subdirectories should also contain their own README that explains further in depth what's going on in each of those files.

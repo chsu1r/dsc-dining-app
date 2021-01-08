@@ -27,21 +27,25 @@ def login():
     if "next" in request.args:
         register_url = get_redirect_url('register', request.args, False)
 
-    form = LoginForm(request.form)
+    form = LoginForm(request.form) # Create a login form to pass into HTML template.
     if request.method == "POST":
         if form.validate():
             try:
                 email = form.email.data
                 password = form.password.data
 
+                user = {}
                 # TODO(SESSION1) FILL THIS LINE IN: Call the Firebase auth service to get the user credentials.
+
                 user = firebase_auth.sign_in_with_email_and_password(email, password)
 
+                ## END CODE
+
                 # setting session variables
-                session["token"] = user["idToken"]
-                session["refresh_token"] = user["refreshToken"]
-                # same as the one on Firebase
-                session["user_id"] = user["localId"]
+                if "idToken" in user:
+                    session["token"] = user["idToken"]
+                    session["refresh_token"] = user["refreshToken"]
+                    session["user_id"] = user["localId"]
 
                 flash("Successfully logged in!", "success")
                 return redirect_dest(url_for('index'), request.args)
@@ -61,8 +65,12 @@ def resetpassword():
                 # TODO(SESSION1): Write a line here to reset the user's password given their email address.
                 # Then clear the session's information, and it will redirect to the login page
                 # for the user to log in again.
+
                 email = form.email.data
                 firebase_auth.send_password_reset_email(email)
+
+                ## END CODE
+                
                 flash(("Email sent successfully - check your inbox to "
                        "reset your password."),
                       "success")
@@ -84,9 +92,13 @@ def register():
                 email = form.email.data
                 password = form.password.data
 
+                new_user = {}
                 # (1) Create the user in the authentication database.
-                # TODO(SESSION1) Replace None here with a call to Firebase: Create a user in the Firebase auth service.
+                # TODO(SESSION1) Make a call to Firebase: Create a user in the Firebase auth service.
+
                 new_user = firebase_auth.create_user_with_email_and_password(email, password)  # Modify this line
+
+                ## END CODE
 
                 # (2) Create the user in the users database.
                 user_data = {
@@ -96,6 +108,7 @@ def register():
                 # (3) Push that new user to the Firebase db, the users table.
                 # TODO(SESSION2): Write a line below to push the new user object to Firebase.
                 ## CODE HERE
+
                 try:
                     if "localId" in new_user and 'idToken' in new_user:
                         users_db = firebase_db.child('users')
@@ -104,14 +117,15 @@ def register():
                 except HTTPError as err:
                     print("There was an error in pushing the new user information to Firebase.")
                     raise err
-                ## END CODE HERE
+
+                ## END CODE
 
                 
                 # (4) Set initial session values
-                session["token"] = new_user.get("idToken", "")
-                # same as the one on Firebase
-                session["user_id"] = new_user.get("localId", "")
-                session["refresh_token"] = new_user.get("refreshToken", "")
+                if "idToken" in new_user:
+                    session["token"] = new_user.get("idToken")
+                    session["user_id"] = new_user.get("localId")
+                    session["refresh_token"] = new_user.get("refreshToken")
 
                 return redirect_dest(url_for('index'), request.args)
 

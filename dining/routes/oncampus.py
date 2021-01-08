@@ -17,9 +17,14 @@ import hashlib
 SAMPLE_MENU_URL = "http://clhsu.scripts.mit.edu/sample-menu.json"
 DIETARY_FLAG_ABBREVS = {"halal" : "HL", "made without gluten": "GF", "vegetarian": "VT", "vegan": "VG", "humane" : "HU", "seafood watch" : "SF", "in balance": "IB"}
 DIETARY_FLAG_COLORS = {"halal" : "#ff9966", "made without gluten": "#999966", "vegetarian": "#28a745", "vegan": "#ffc107", "seafood watch" : "#007bff", "humane" : "#17a2b8", "in balance": "#6c757d"}
+
 @app.route('/oncampus/<dorm_name>', methods=["GET"])
 def oncampus(dorm_name):
-    """ Display the menu for dorm_name """
+    """ 
+    Display the menu for dorm_name. 
+    This function grabs the ratings for menu items from Firebase, loads the dorm menu,
+    and passes all that information to the HTML template.
+    """
     r = requests.get(SAMPLE_MENU_URL)
     resp = r.json()
     house_menus = resp["venues"]["house"]
@@ -27,24 +32,32 @@ def oncampus(dorm_name):
     user_ratings = {}
     global_ratings = {}
     ## TODO(): SESSION2: Grab the user individual ratings and the global ratings across all users from the database.
+    
+    # Make sure to check whether the user is logged in before asking for user ratings.
+    # If the user is not logged in, then we shouldn't be looking for any user ratings,
+    # we only load the global ratings.
     if 'token' in session and 'user_id' in session and refresh_user_token():
         users_db = firebase_db.child('users').child(session["user_id"])
         user_ratings = users_db.child('ratings').get(session['token']).val()
-        user_ratings = {} if not user_ratings else user_ratings
+        user_ratings = {} if not user_ratings else user_ratings  # if the user ratings list doesn't exist, then just use an empty dictionary.
 
     global_ratings = firebase_db.child('food').get().val()
     global_ratings = {} if not global_ratings else global_ratings  # if the food table doesn't exist, then just use an empty dictionary.
 
     ## END CODE
 
+    # Grab the requested dorm menu from the all menu json
     for menu in house_menus:
         if menu['name'].lower() == dorm_name:
             dorm_name = menu['name']
             house_menu = sorted(menu['meals_by_day'][0]['meals'], key=lambda k:k['name'])
 
+    # Populate a few additional fields for each menu item.
     for meal_idx, meal in enumerate(house_menu):
         for i, item in enumerate(meal['items']):
             item_name = item['name']
+
+            # This is the unique ID that represents each menu item. It hashes the dorm name with the menu item name.
             hashed = hashlib.sha256((dorm_name + item_name).encode("utf-8")).hexdigest()
 
             # populate some additional fields in the house_menu object for display on webpage.
@@ -63,11 +76,18 @@ def oncampus(dorm_name):
 @app.route('/oncampus/submit-rating', methods=["POST"])
 @login_required
 def submit_rating():
+    """
+    Function that is called by the JS side of oncampus.html to submit a user rating.
+    What this does is extract fields from the request and pushes them to Firebase.
+    Note that this is @login_required, which requires a user to be logged in before this is run.
+    See utils.py to see what @login_required actually checks for.
+    """
     rating = int(request.json['value'])
     item_id = request.json['id'].split('-')[1]
     ## TODO() SESSION2: Fill in code to push a rating the "food" table.
+    
     user_ratings = firebase_db.child('users').child(session["user_id"]).child('ratings')
     user_ratings.child(item_id).set(rating, token=session['token'])
 
-
+    ## END CODE
     return "success"

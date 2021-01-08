@@ -31,8 +31,11 @@ def refresh_user_token():
     try:
         # TODO(SESSION1): Write a line to refresh the user's token using the refresh token stored in the session.
         # Then write another line to store the new token and refresh token in the session.
+        
         user = firebase_auth.refresh(session["refresh_token"])
         session["token"], session["refresh_token"] = user["idToken"], user["refreshToken"]
+
+        ## END CODE
         return True  # keep this
 
     # A few problems can occur during refreshing a user token. For instance, that token might not belong to any user in our system.
@@ -96,13 +99,23 @@ def redirect_dest(fallback, args={}):
 
 
 def login_required(func):
-    """Decorator for login required routes."""
+    """
+    Decorator for login required routes.
+    This looks for a session token to determine whether a user is logged in
+    before allowing them to access a requested page that requires a user
+    to be logged in.
+    If no user is logged in, then it redirects to the login page.
+    """
     @wraps(func)
     def wrap(*args, **kwargs):
         # TODO(SESSION1): Write a line to validate a token (check to see if it exists and make sure it's a real token)
+
         if 'token' in session and 'user_id' in session:
             return func(*args, **kwargs)
-        # else
+
+        # END CODE
+
+        # if the user is not logged in, then redirect the user to the login page.
         flash("Login required", "warning")
         return redirect(url_for('login'))
     return wrap
