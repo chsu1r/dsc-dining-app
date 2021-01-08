@@ -33,17 +33,6 @@ def oncampus(dorm_name):
     global_ratings = {}
     ## TODO(): SESSION2: Grab the user individual ratings and the global ratings across all users from the database.
     
-    # Make sure to check whether the user is logged in before asking for user ratings.
-    # If the user is not logged in, then we shouldn't be looking for any user ratings,
-    # we only load the global ratings.
-    if 'token' in session and 'user_id' in session and refresh_user_token():
-        users_db = firebase_db.child('users').child(session["user_id"])
-        user_ratings = users_db.child('ratings').get(session['token']).val()
-        user_ratings = {} if not user_ratings else user_ratings  # if the user ratings list doesn't exist, then just use an empty dictionary.
-
-    global_ratings = firebase_db.child('food').get().val()
-    global_ratings = {} if not global_ratings else global_ratings  # if the food table doesn't exist, then just use an empty dictionary.
-
     ## END CODE
 
     # Grab the requested dorm menu from the all menu json
@@ -85,9 +74,6 @@ def submit_rating():
     rating = int(request.json['value'])
     item_id = request.json['id'].split('-')[1]
     ## TODO() SESSION2: Fill in code to push a rating the "food" table.
-    
-    user_ratings = firebase_db.child('users').child(session["user_id"]).child('ratings')
-    user_ratings.child(item_id).set(rating, token=session['token'])
 
     ## END CODE
     return "success"
