@@ -31,8 +31,8 @@ def refresh_user_token():
     try:
         # TODO(SESSION1): Write a line to refresh the user's token using the refresh token stored in the session.
         # Then write another line to store the new token and refresh token in the session.
-        #
-        #
+
+        ## END CODE
         return True  # keep this
 
     # A few problems can occur during refreshing a user token. For instance, that token might not belong to any user in our system.
@@ -47,6 +47,31 @@ def refresh_user_token():
             session.clear()
             return False
         abort(404)
+
+def is_safe_url(target):
+    """Determine if the redirect URL is safe or nah"""
+    # Also yes I copied this from flask_admin
+    valid_schemes = ['http', 'https']
+    _substitute_whitespace = compile(r'[\s\x00-\x08\x0B\x0C\x0E-\x19]+').sub
+    _fix_multiple_slashes = compile(r'(^([^/]+:)?//)/*').sub
+
+    target = target.replace('\\', '/')
+
+    # handle cases like "j a v a s c r i p t:"
+    target = _substitute_whitespace('', target)
+
+    # Chrome and FireFox "fix" more than two slashes into two after protocol
+    target = _fix_multiple_slashes(lambda m: m.group(1), target, 1)
+
+    # prevent urls starting with "javascript:"
+    target_info = urlparse(target)
+    target_scheme = target_info.scheme
+    if target_scheme and target_scheme not in valid_schemes:
+        return False
+
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return ref_url.netloc == test_url.netloc
 
 def get_redirect_url(fallback, args={}, go_to_dest=True):
     """ Generate the redirect URL if able to, otherwise generate fallback/ """
@@ -71,13 +96,20 @@ def redirect_dest(fallback, args={}):
 
 
 def login_required(func):
-    """Decorator for login required routes."""
+    """
+    Decorator for login required routes.
+    This looks for a session token to determine whether a user is logged in
+    before allowing them to access a requested page that requires a user
+    to be logged in.
+    If no user is logged in, then it redirects to the login page.
+    """
     @wraps(func)
     def wrap(*args, **kwargs):
         # TODO(SESSION1): Write a line to validate a token (check to see if it exists and make sure it's a real token)
-        if 'token' in session and 'user_id' in session:
-            return func(*args, **kwargs)
-        # else
+
+        # END CODE
+
+        # if the user is not logged in, then redirect the user to the login page.
         flash("Login required", "warning")
         return redirect(url_for('login'))
     return wrap
