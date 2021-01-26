@@ -31,7 +31,8 @@ def refresh_user_token():
     try:
         # TODO(SESSION1): Write a line to refresh the user's token using the refresh token stored in the session.
         # Then write another line to store the new token and refresh token in the session.
-
+        user = firebase_auth.refresh(session["refresh_token"])
+        session["token"], session["refresh_token"] = user["idToken"], user["refreshToken"]
         ## END CODE
         return True  # keep this
 
@@ -106,7 +107,8 @@ def login_required(func):
     @wraps(func)
     def wrap(*args, **kwargs):
         # TODO(SESSION1): Write a line to validate a token (check to see if it exists and make sure it's a real token)
-
+        if 'token' in session and 'user_id' in session:
+            return func(*args, **kwargs)
         # END CODE
 
         # if the user is not logged in, then redirect the user to the login page.
